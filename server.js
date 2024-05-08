@@ -1,126 +1,54 @@
 const express = require('express');
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-// middleware
+// Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
-const pool = new Pool(
-  {
-    // PostgreSQL username
-    user: 'postgres',
-    // PostgreSQL password
-    password: 'password',
-    host: 'localhost',
-    database: 'cms_db'
-  },
-  console.log(`Connected to the cms_db database.`)
-)
-
-pool.connect();
-
-// Create a movie
-app.post('/api/new_movie', ({ body }, res) => {
-  const sql = `INSERT INTO movies (movie_name)
-    VALUES ($1)`;
-  const params = [body.movie_name];
-
-  pool.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: body
-    });
-  });
+const pool = new Pool({
+  user: 'postgres',
+  password: 'password',
+  host: 'localhost',
+  database: 'cms_db'
 });
 
-// Read all movies
-app.get('/api/movies', (req, res) => {
-  const sql = `SELECT id, movie_name AS title FROM movies`;
+pool.connect()
+  .then(() => console.log('Connected to the cms_db database'))
+  .catch(err => console.error('Error connecting to the database', err));
 
-  pool.query(sql, (err, { rows }) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
+// Read schema.sql
+const schemaPath = path.join(__dirname, 'db', 'schema.sql');
+const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+
+// Read seeds.sql
+const seedsPath = path.join(__dirname, 'db', 'seeds.sql');
+const seedsSql = fs.readFileSync(seedsPath, 'utf8');
+
+// Routes
+app.get('/', (req, res) => {
+  res.send('Welcome to the Employee Management System');
 });
 
-// Delete a movie
-app.delete('/api/movie/:id', (req, res) => {
-  const sql = `DELETE FROM movies WHERE id = $1`;
-  const params = [req.params.id];
+// Add your CRUD routes here
 
-  pool.query(sql, params, (err, result) => {
-    if (err) {
-      res.statusMessage(400).json({ error: err.message });
-    } else if (!result.rowCount) {
-      res.json({
-        message: 'Movie not found'
-      });
-    } else {
-      res.json({
-        message: 'deleted',
-        changes: result.rowCount,
-        id: req.params.id
-      });
-    }
-  });
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
-// Read list of all reviews and associated movie name using LEFT JOIN
-app.get('/api/movie-reviews', (req, res) => {
-  const sql = `SELECT movies.movie_name AS movie, reviews.review FROM reviews LEFT JOIN movies ON reviews.movie_id = movies.id ORDER BY movies.movie_name;`;
-  pool.query(sql, (err, { rows }) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
-});
-
-// BONUS: Update review
-app.put('/api/review/:id', (req, res) => {
-  const sql = `UPDATE reviews SET review = $1 WHERE id = $2`;
-  const params = [req.body.review, req.params.id];
-
-  pool.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-    } else if (!result.rowCount) {
-      res.json({
-        message: 'Review not found'
-      });
-    } else {
-      res.json({
-        message: 'success',
-        data: req.body,
-        changes: result.rowCount
-      });
-    }
-  });
-});
-
-// Default response for any other request (Not Found)
+// 404 Not Found Middleware
 app.use((req, res) => {
-  res.status(404).end();
+  res.status(404).send('404 Not Found');
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
