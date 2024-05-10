@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const http = require('http');
-const { app, pool } = require('./server'); // Import the app and pool instances from server.js
+// const { app, pool } = require('./server'); // Import the app and pool instances from server.js
 
 // Options for HTTP requests
 const options = {
