@@ -1,11 +1,10 @@
 const inquirer = require('inquirer');
 const http = require('http');
-// const { app, pool } = require('./server'); // Import the app and pool instances from server.js
 
 // Options for HTTP requests
 const options = {
   hostname: 'localhost',
-  port: 3001, // Assuming your server is running on port 3001
+  port: 3001,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -72,21 +71,21 @@ function promptAction() {
 function viewDepartments() {
   makeGetRequest('/departments', data => {
     console.table(data.data);
-    promptAction(); // Prompt for next action
+    promptAction();
   });
 }
 
 function viewRoles() {
   makeGetRequest('/roles', data => {
     console.table(data.data);
-    promptAction(); // Prompt for next action
+    promptAction();
   });
 }
 
 function viewEmployees() {
   makeGetRequest('/employees', data => {
     console.table(data.data);
-    promptAction(); // Prompt for next action
+    promptAction();
   });
 }
 
@@ -100,7 +99,7 @@ function addDepartment() {
   ]).then(answer => {
     makePostRequest('/departments', answer, () => {
       console.log('Department added successfully');
-      promptAction(); // Prompt for next action
+      promptAction();
     });
   });
 }
@@ -125,7 +124,7 @@ function addRole() {
   ]).then(answer => {
     makePostRequest('/roles', answer, () => {
       console.log('Role added successfully');
-      promptAction(); // Prompt for next action
+      promptAction();
     });
   });
 }
@@ -155,7 +154,7 @@ function addEmployee() {
   ]).then(answer => {
     makePostRequest('/employees', answer, () => {
       console.log('Employee added successfully');
-      promptAction(); // Prompt for next action
+      promptAction();
     });
   });
 }
@@ -176,7 +175,7 @@ function updateEmployeeRole() {
     const { employee_id, new_role_id } = answer;
     makePutRequest(`/employees/${employee_id}`, { role_id: new_role_id }, () => {
       console.log('Employee role updated successfully');
-      promptAction(); // Prompt for next action
+      promptAction();
     });
   });
 }
