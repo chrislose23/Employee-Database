@@ -200,5 +200,25 @@ function makeGetRequest(path, callback) {
   req.end();
 }
 
+// Helper function to make HTTP POST requests
+function makePostRequest(path, data, callback) {
+  const req = http.request({ ...options, path, method: 'POST' }, res => {
+    let responseData = '';
+    res.on('data', chunk => {
+      responseData += chunk;
+    });
+    res.on('end', () => {
+      callback(JSON.parse(responseData));
+    });
+  });
+
+  req.on('error', error => {
+    console.error('Error:', error.message);
+  });
+
+  req.write(JSON.stringify(data));
+  req.end();
+}
+
 // Start the CLI
 promptAction();
