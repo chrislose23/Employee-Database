@@ -124,6 +124,36 @@ function addRole() {
   });
 }
 
+function addEmployee() {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'first_name',
+      message: 'Enter the employee\'s first name:'
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: 'Enter the employee\'s last name:'
+    },
+    {
+      type: 'input',
+      name: 'role_id',
+      message: 'Enter the role ID for the employee:'
+    },
+    {
+      type: 'input',
+      name: 'manager_id',
+      message: 'Enter the manager ID for the employee:'
+    }
+  ]).then(answer => {
+    makePostRequest('/employees', answer, () => {
+      console.log('Employee added successfully');
+      promptAction(); // Prompt for next action
+    });
+  });
+}
+
 // Helper function to make HTTP GET requests
 function makeGetRequest(path, callback) {
   const req = http.request({ ...options, path, method: 'GET' }, res => {
