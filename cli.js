@@ -37,21 +37,27 @@ function promptAction() {
         break;
       case 'View all roles':
         // Handle viewing all roles
+        viewRoles();
         break;
       case 'View all employees':
         // Handle viewing all employees
+        viewEmployees();
         break;
       case 'Add a department':
         // Handle adding a department
+        addDepartment();
         break;
       case 'Add a role':
         // Handle adding a role
+        addRole();
         break;
       case 'Add an employee':
         // Handle adding an employee
+        addEmployee();
         break;
       case 'Update an employee role':
         // Handle updating an employee role
+        updateEmployeeRole();
         break;
       case 'Exit':
         console.log('Exiting...');
