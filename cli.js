@@ -84,7 +84,20 @@ function viewEmployees() {
   });
 }
 
-
+function addDepartment() {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'dpt_name',
+      message: 'Enter the department name:'
+    }
+  ]).then(answer => {
+    makePostRequest('/departments', answer, () => {
+      console.log('Department added successfully');
+      promptAction(); // Prompt for next action
+    });
+  });
+}
 
 // Helper function to make HTTP GET requests
 function makeGetRequest(path, callback) {
