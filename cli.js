@@ -77,6 +77,13 @@ function viewRoles() {
   });
 }
 
+function viewEmployees() {
+  makeGetRequest('/employees', data => {
+    console.table(data.data);
+    promptAction(); // Prompt for next action
+  });
+}
+
 
 
 // Helper function to make HTTP GET requests
