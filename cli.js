@@ -99,6 +99,31 @@ function addDepartment() {
   });
 }
 
+function addRole() {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Enter the role title:'
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'Enter the role salary:'
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: 'Enter the department ID for the role:'
+    }
+  ]).then(answer => {
+    makePostRequest('/roles', answer, () => {
+      console.log('Role added successfully');
+      promptAction(); // Prompt for next action
+    });
+  });
+}
+
 // Helper function to make HTTP GET requests
 function makeGetRequest(path, callback) {
   const req = http.request({ ...options, path, method: 'GET' }, res => {
