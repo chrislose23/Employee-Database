@@ -70,6 +70,15 @@ function viewDepartments() {
   });
 }
 
+function viewRoles() {
+  makeGetRequest('/roles', data => {
+    console.table(data.data);
+    promptAction(); // Prompt for next action
+  });
+}
+
+
+
 // Helper function to make HTTP GET requests
 function makeGetRequest(path, callback) {
   const req = http.request({ ...options, path, method: 'GET' }, res => {
