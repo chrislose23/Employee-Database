@@ -154,6 +154,27 @@ function addEmployee() {
   });
 }
 
+function updateEmployeeRole() {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'employee_id',
+      message: 'Enter the employee ID whose role you want to update:'
+    },
+    {
+      type: 'input',
+      name: 'new_role_id',
+      message: 'Enter the new role ID for the employee:'
+    }
+  ]).then(answer => {
+    const { employee_id, new_role_id } = answer;
+    makePutRequest(`/employees/${employee_id}`, { role_id: new_role_id }, () => {
+      console.log('Employee role updated successfully');
+      promptAction(); // Prompt for next action
+    });
+  });
+}
+
 // Helper function to make HTTP GET requests
 function makeGetRequest(path, callback) {
   const req = http.request({ ...options, path, method: 'GET' }, res => {
